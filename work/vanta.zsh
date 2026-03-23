@@ -12,7 +12,7 @@ fi
 # Usage:
 #   cde           — list all environments
 #   cde <name>    — connect to the named environment (starts it if stopped,
-#                   creates a new obsidian environment if not found)
+#                   creates a new ona environment if not found)
 cde() {
   if [[ $# -eq 0 ]]; then
     echo "Environments:"
@@ -42,9 +42,9 @@ cde() {
     ona environment ssh "$env_id" -- -t "zsh -i -c 't $env_id'"
 
   else
-    # No environment with that name — create a new one from the Obsidian project.
+    # No environment with that name — create a new one from the ONA_PROJECT_ID project.
     # IDs are sourced from secrets/local.zsh (gitignored).
-    echo "No environment named '$name' found. Creating new obsidian environment..."
+    echo "No environment named '$name' found. Creating new environment..."
     if [[ -z "$ONA_PROJECT_ID" || -z "$ONA_OHIO_CLASS_ID" ]]; then
       echo "Error: ONA_PROJECT_ID and ONA_OHIO_CLASS_ID must be set in secrets/local.zsh"
       return 1
