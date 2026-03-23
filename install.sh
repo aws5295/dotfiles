@@ -125,13 +125,15 @@ fi
 
 # ── VSCode extensions ──────────────────────────────────────────────────────────
 # Install all extensions listed in vscode/extensions (one ID per line, # comments ignored).
-if command -v code &>/dev/null; then
+# Some environments (e.g. Linux CDEs) have a 'code' stub that doesn't support extension installs.
+# We verify it actually works before proceeding.
+if command -v code &>/dev/null && code --list-extensions &>/dev/null; then
   info "installing VSCode extensions..."
   grep -v '^\s*#' "$DOTFILES/vscode/extensions" | grep -v '^\s*$' | while read -r ext; do
-    code --install-extension "$ext" --force
+    code --install-extension "$ext" --force || warn "failed to install extension: $ext"
   done
 else
-  warn "code not found — skipping VSCode extensions"
+  warn "code not found or does not support extension installs — skipping"
 fi
 
 info "done. open a new shell or run: exec zsh"
