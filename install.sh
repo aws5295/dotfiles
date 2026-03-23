@@ -3,11 +3,13 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
-# --non-interactive flag: skips prompts (used for cloud/provisioned machines like Gitpod)
+# Detect interactive mode: check for explicit flag or whether stdin is a TTY.
+# On provisioned machines (e.g. Gitpod) stdin is not a TTY, so prompts are skipped automatically.
 INTERACTIVE=true
 for arg in "$@"; do
   [[ "$arg" == "--non-interactive" ]] && INTERACTIVE=false
 done
+[[ ! -t 0 ]] && INTERACTIVE=false
 
 warn() { echo "[warn] $*"; }
 info() { echo "[info] $*"; }
