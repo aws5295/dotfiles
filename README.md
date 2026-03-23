@@ -62,28 +62,6 @@ tmux new-session -d && tmux kill-server
 git log --oneline
 ```
 
-## Structure
-
-```
-dotfiles/
-├── install.sh          # bootstrap: symlinks + plugin install
-├── zsh/
-│   ├── main.zsh        # entry point (~/.zshrc)
-│   ├── aliases.zsh     # all aliases (general, git, docker, vim)
-│   ├── functions.zsh   # shell functions (s, sk, md, =)
-│   ├── options.zsh     # shell options (history, navigation)
-│   ├── completions.zsh # zsh completion system
-│   ├── prompt.zsh      # prompt
-│   ├── fzf.zsh         # fzf integration
-│   ├── platform.zsh    # macOS vs Linux PATH setup
-│   └── termcolors.zsh  # ANSI color variables
-├── tmux/               # tmux config (TPM, Dracula, resurrect)
-├── vim/                # vim config (vim-plug, gruvbox)
-├── git/                # gitconfig
-├── ag/                 # .ignore file for ag
-└── deps/               # cloned plugin dependencies (gitignored)
-```
-
 ## Updating plugins
 
 ```sh
