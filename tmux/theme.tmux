@@ -14,7 +14,7 @@ set -g @dracula-show-empty-plugins false
 set -g @dracula-cpu-display-load false
 
 # Icon shown on the far left of the status bar (options: session, smiley, window, or a custom string)
-set -g @dracula-show-left-icon smiley
+set -g @dracula-show-left-icon session
 
 # Status bar widgets to display (left to right)
 set -g @dracula-plugins "cpu-usage ram-usage git"
