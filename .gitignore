@@ -11,3 +11,6 @@ tmux/tmux
 
 # Machine-local git config (contains email, never commit)
 .gitconfig.local
+
+# Machine-local secrets (contains API keys, IDs, tokens — never commit)
+secrets/local.zsh

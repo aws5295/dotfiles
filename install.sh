@@ -21,6 +21,15 @@ if [[ "$(uname)" == "Darwin" ]]; then
   command -v brew &>/dev/null || die "Homebrew is required on macOS — install from https://brew.sh"
 fi
 
+# ── Secrets file ──────────────────────────────────────────────────────────────
+# Copy the example secrets file on first run. Fill in values before opening a shell.
+if [[ ! -f "$DOTFILES/secrets/local.zsh" ]]; then
+  cp "$DOTFILES/secrets/example.zsh" "$DOTFILES/secrets/local.zsh"
+  info "created secrets/local.zsh from example — fill in values before opening a shell"
+else
+  info "secrets/local.zsh already exists, skipping"
+fi
+
 # ── Git local config ──────────────────────────────────────────────────────────
 # ~/.gitconfig.local holds the machine-specific git email and is never committed.
 # In interactive mode we prompt for it on first run. On provisioned machines
