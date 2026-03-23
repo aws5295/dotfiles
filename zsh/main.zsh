@@ -53,6 +53,11 @@ if command -v direnv &>/dev/null; then
   eval "$(direnv hook zsh)"
 fi
 
+# ── Secrets ───────────────────────────────────────────────────────────────────
+# Local secrets file — gitignored, never committed. Copy secrets/example.zsh to
+# secrets/local.zsh and fill in values. See secrets/example.zsh for available vars.
+[[ -f ~/.dotfiles/secrets/local.zsh ]] && source ~/.dotfiles/secrets/local.zsh
+
 # ── Work (employer-specific) ──────────────────────────────────────────────────
 for f in ~/.dotfiles/work/*.zsh; do
   [[ -f "$f" ]] && source "$f"
