@@ -22,8 +22,8 @@ _prompt_context() {
 setopt PROMPT_SUBST
 
 # %F{color}...%f = set/reset foreground color
-# %1~            = current directory (last component only)
+# %~             = current directory (full path, with ~ for home)
 # %n             = username
 # %*             = current time (HH:MM:SS, 24-hour)
 # Single quotes prevent expansion at assignment time — functions run on each render
-PROMPT='%F{blue}%1~%f %F{cyan}%n%f%F{green}@%f%F{magenta}$(_prompt_context)%f %F{yellow}%*%f $(_prompt_char) '
+PROMPT='%F{blue}%~%f %F{cyan}%n%f%F{green}@%f%F{magenta}$(_prompt_context)%f %F{yellow}%*%f $(_prompt_char) '
