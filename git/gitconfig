@@ -1,0 +1,88 @@
+[user]
+  name = Adam Shaw
+  # email is set in ~/.gitconfig.local (machine-specific, not tracked)
+  # On a new machine, install.sh will prompt you to create this file.
+  # To check which email is active and where it comes from:
+  #   git config --show-origin user.email
+
+[push]
+  default = simple   # push the current branch to its upstream; error if no upstream is set
+
+[diff]
+  tool = my_diff_meld   # use meld as the visual diff tool (launch with: git difftool)
+
+[difftool]
+  prompt = false   # don't ask for confirmation before opening each file in the diff tool
+
+[difftool "my_diff_meld"]
+  cmd = meld "$LOCAL" "$REMOTE"
+
+[merge]
+  tool = my_merge_meld
+  defaultToUpstream = true   # when merging, default to merging from the upstream tracking branch
+  conflictstyle = diff3      # show the base version in conflict markers (easier to understand conflicts)
+
+[mergetool]
+  keepBackup = false   # don't create .orig backup files after a successful merge
+
+[mergetool "my_merge_meld"]
+  cmd = meld "$LOCAL" "$REMOTE" --diff "$BASE" "$LOCAL" --diff "$BASE" "$REMOTE" --diff "$LOCAL" "$MERGED" "$REMOTE" --diff "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED"
+
+[core]
+  editor = vim       # use vim for commit messages, rebase todos, etc.
+  autocrlf = input   # convert CRLF → LF on commit, but don't convert on checkout (correct for macOS/Linux)
+
+[color]
+  ui = auto   # use colors when outputting to a terminal, but not when piping
+
+[color "diff"]
+  meta = yellow
+  commit = green
+  frag = magenta   # hunk headers (@@ ... @@)
+  old = red        # removed lines
+  new = green      # added lines
+  whitespace = red reverse
+
+[color "diff-highlight"]
+  oldNormal = red
+  oldHighlight = "red 52"
+  newNormal = "green"
+  newHighlight = "green 22"
+
+[color "branch"]
+  current = yellow reverse   # highlight the current branch
+  local = yellow
+  remote = green
+
+[color "status"]
+  untracked = cyan
+
+[pager]
+  # Use diff-so-fancy for prettier diffs when paging through output
+  diff = diff-so-fancy | less --tabs=4 -RFX
+  show = diff-so-fancy | less --tabs=4 -RFX
+
+[grep]
+  lineNumber = true      # always show line numbers in grep output
+  extendRegexp = true    # use extended regular expressions (ERE) by default
+
+[credential]
+  helper = store   # cache credentials to disk (in ~/.git-credentials)
+
+[rebase]
+  autostash = true   # automatically stash/unstash uncommitted changes when rebasing
+
+[alias]
+  # Interactively check out a recent branch using fzf
+  recent = "!git checkout $(git for-each-ref --count=100 --sort=-committerdate refs/heads/ --format='%(refname:short)' | fzf)"
+
+  # Fetch a specific branch from origin without checking it out
+  # Usage: git summon <branch-name>
+  summon = "!summon () { b=$1; git fetch origin +refs/heads/$b:refs/remotes/origin/$b $b:$b; }; summon"
+
+  # Fetch and prune: removes remote-tracking branches that no longer exist on origin
+  gone = "!git fetch --prune --all"
+
+[include]
+  # Machine-local overrides (email, etc.) — this file is never committed
+  path = ~/.gitconfig.local

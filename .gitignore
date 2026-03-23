@@ -1,0 +1,13 @@
+deps/
+.#recentf
+
+# Symlinks created by install.sh pointing back into the repo
+dotfiles
+zsh/zsh
+tmux/tmux
+
+# IDE / tool config
+.claude/
+
+# Machine-local git config (contains email, never commit)
+.gitconfig.local

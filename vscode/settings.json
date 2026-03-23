@@ -1,0 +1,101 @@
+{
+    // ── Editor ────────────────────────────────────────────────────────────────
+    "editor.fontSize": 16,
+    "editor.lineNumbers": "off",    // hide line numbers (using relative numbers via vim plugin instead)
+
+    // ── Emmet ─────────────────────────────────────────────────────────────────
+    // Allow Emmet abbreviations to expand in JSX files (e.g. div.foo → <div className="foo">)
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+    },
+
+    // ── VSCode Vim ────────────────────────────────────────────────────────────
+    "vim.useSystemClipboard": true,   // yank/paste uses the system clipboard (same as vim's clipboard=unnamed)
+    "vim.incsearch": true,            // highlight search matches as you type
+    "vim.hlsearch": true,             // keep matches highlighted after searching
+
+    // Exit insert mode by typing jk quickly (no need to reach for Escape)
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"]
+        }
+    ],
+
+    // Normal mode key bindings (non-recursive, so they won't chain into other mappings)
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            // -: clear search highlighting (equivalent to :nohl)
+            "before": ["-"],
+            "after": [],
+            "commands": [{ "command": ":nohl" }]
+        },
+        {
+            // Enter: save the current file
+            "before": ["<cr>"],
+            "after": [],
+            "commands": [{ "command": "workbench.action.files.save", "args": [] }]
+        },
+        {
+            // q: close the current editor tab
+            "before": ["q"],
+            "after": [],
+            "commands": [{ "command": "workbench.action.closeActiveEditor", "args": [] }]
+        },
+        {
+            // go: jump to the top of the file (mirrors gg in standard vim)
+            "before": ["g", "o"],
+            "after": ["g", "g"]
+        },
+        {
+            // gl: jump to the bottom of the file
+            "before": ["g", "l"],
+            "after": ["G"]
+        },
+        {
+            // z-: scroll so the current line is at the bottom of the viewport
+            "before": ["z", "-"],
+            "after": ["z", "b"]
+        },
+        {
+            // ): jump to next paragraph/block (more natural than })
+            "before": [")"],
+            "after": ["}"]
+        },
+        {
+            // (: jump to previous paragraph/block
+            "before": ["("],
+            "after": ["{"]
+        }
+    ],
+
+    // Dispatch key events by keyCode rather than key character.
+    // Required for vim keybindings to work correctly with non-US keyboard layouts.
+    "keyboard.dispatch": "keyCode",
+
+    // ── Appearance ────────────────────────────────────────────────────────────
+    "workbench.colorTheme": "One Dark Pro Vivid",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#2F3238"   // subtle highlight on the current line
+    },
+    "window.zoomLevel": 1,
+
+    // ── Git ───────────────────────────────────────────────────────────────────
+    "git.confirmSync": false,          // don't ask for confirmation before git sync
+    "git.enableSmartCommit": true,     // commit all changes if there's nothing staged
+
+    // ── Telemetry ─────────────────────────────────────────────────────────────
+    "telemetry.enableTelemetry": false,
+    "telemetry.enableCrashReporter": false,
+
+    // ── Misc ──────────────────────────────────────────────────────────────────
+    "vsicons.dontShowNewVersionMessage": true,   // suppress vscode-icons update notifications
+
+    // ── Remote SSH ────────────────────────────────────────────────────────────
+    // Tell the Remote SSH extension that Gitpod machines run Linux
+    "remote.SSH.remotePlatform": {
+        "*.gitpod.local": "linux",
+        "*.gitpod.remote": "linux"
+    }
+}
