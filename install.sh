@@ -71,6 +71,8 @@ ln -sfn "$DOTFILES/vim"             ~/.vim            # vim config dir
 ln -sfn "$DOTFILES/git/gitconfig"   ~/.gitconfig     # git config
 ln -sfn "$DOTFILES/ag/ignore"       ~/.ignore        # ag/ripgrep ignore patterns
 ln -sfn "$DOTFILES"                 ~/.dotfiles       # convenience pointer to this repo
+mkdir -p ~/.claude
+ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
 
 # VSCode settings and the press-and-hold fix are only applied if VSCode is installed.
 # Settings path differs by OS: macOS uses ~/Library/..., Linux uses ~/.config/...
