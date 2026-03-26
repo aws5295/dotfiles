@@ -59,8 +59,8 @@
 
 [pager]
   # Use diff-so-fancy for prettier diffs when paging through output
-  diff = diff-so-fancy | less --tabs=4 -RFX
-  show = diff-so-fancy | less --tabs=4 -RFX
+  diff = ~/.dotfiles/deps/git/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
+  show = ~/.dotfiles/deps/git/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
 
 [grep]
   lineNumber = true      # always show line numbers in grep output
@@ -68,6 +68,9 @@
 
 [credential]
   helper = store   # cache credentials to disk (in ~/.git-credentials)
+
+[pull]
+  rebase = true   # always rebase instead of merge when pulling
 
 [rebase]
   autostash = true   # automatically stash/unstash uncommitted changes when rebasing

@@ -106,6 +106,17 @@ clone_dep "zsh-users/zsh-completions"               # additional completion defi
 clone_dep "zdharma-continuum/fast-syntax-highlighting" # syntax highlighting in the shell prompt
 clone_dep "wfxr/forgit"                             # interactive git commands via fzf
 
+# ── Git tools ──────────────────────────────────────────────────────────────────
+# Clone git utilities that aren't available via package managers on all platforms.
+# Referenced by path in git/gitconfig so they work on macOS and Linux alike.
+info "cloning git tools..."
+git_dep_dest="$DOTFILES/deps/git/diff-so-fancy"
+if [ -d "$git_dep_dest" ]; then
+  info "  diff-so-fancy already exists, skipping"
+else
+  git clone --depth 1 "https://github.com/so-fancy/diff-so-fancy" "$git_dep_dest"
+fi
+
 # ── Vim-plug ──────────────────────────────────────────────────────────────────
 # Download the vim-plug plugin manager. Vim plugins themselves are installed
 # automatically on first `vim` open via the VimEnter autocmd in vim/plugins.vim.
