@@ -48,6 +48,7 @@ brew "lsd"                   # ls with icons
 brew "mosh"                  # remote shell over UDP
 brew "procs"                 # modern ps
 brew "sd"                    # find & replace CLI
+brew "thefuck"               # corrects previous console commands
 brew "tree"
 
 # ── Casks ─────────────────────────────────────────────────────────────────────
