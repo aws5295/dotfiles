@@ -1,7 +1,6 @@
 {
     // ── Editor ────────────────────────────────────────────────────────────────
-    "editor.fontSize": 16,
-    "editor.lineNumbers": "off",    // hide line numbers (using relative numbers via vim plugin instead)
+    "editor.fontSize": 16, // hide line numbers (using relative numbers via vim plugin instead)
 
     // ── Emmet ─────────────────────────────────────────────────────────────────
     // Allow Emmet abbreviations to expand in JSX files (e.g. div.foo → <div className="foo">)
@@ -73,8 +72,11 @@
     // Required for vim keybindings to work correctly with non-US keyboard layouts.
     "keyboard.dispatch": "keyCode",
 
+    // ── Layout ────────────────────────────────────────────────────────────────
+    "workbench.sideBar.location": "right",   // move the file explorer/sidebar to the right
+
     // ── Appearance ────────────────────────────────────────────────────────────
-    "workbench.colorTheme": "One Dark Pro Vivid",
+    "workbench.colorTheme": "Dracula Theme",
     "workbench.iconTheme": "vscode-icons",
     "workbench.colorCustomizations": {
         "editor.lineHighlightBackground": "#2F3238"   // subtle highlight on the current line
@@ -97,5 +99,13 @@
     "remote.SSH.remotePlatform": {
         "*.gitpod.local": "linux",
         "*.gitpod.remote": "linux"
+    },
+    "task.allowAutomaticTasks": "on",
+    "search.showLineNumbers": true,
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
     }
 }
