@@ -17,7 +17,7 @@ tmux send-keys -t "$SESSION:claude" "claude" Enter
 
 # Window 4: web — 60/40 left/right split; run "just pp" in the left pane
 tmux new-window -t "$SESSION" -n "web"
-tmux split-window -h -p 40 -t "$SESSION:web"
+tmux split-window -h -l 40% -t "$SESSION:web"
 tmux send-keys -t "$SESSION:web.0" "just pp" Enter
 
 # Window 5: docker
