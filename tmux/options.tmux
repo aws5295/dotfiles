@@ -18,3 +18,6 @@ set -g history-limit 30000
 
 # When a window is closed, renumber remaining windows so there are no gaps
 set-option -g renumber-windows on
+
+# Pass extended key sequences (e.g. Shift+Enter) through to applications like Claude Code
+set -g extended-keys on
