@@ -30,11 +30,8 @@ cde() {
   local name="$1"
 
   # Fetch all environments and look for one matching the given name
-  local env_json
-  env_json=$(ona environment list -o json 2>/dev/null)
-
   local env_id env_phase
-  env_id=$(echo "$env_json" | jq -r ".[] | select(.metadata.name == \"$name\") | .id" 2>/dev/null)
+  env_id=$(ona environment list -o json 2>/dev/null | jq -r ".[] | select(.metadata.name == \"$name\") | .id" 2>/dev/null | head -n1)
 
   if [[ -n "$env_id" ]]; then
     # --start will start the environment if it isn't running and wait until it's ready
