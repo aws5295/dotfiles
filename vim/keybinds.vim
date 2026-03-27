@@ -40,7 +40,7 @@ nmap , <Leader>        " use , as the leader key
 omap , <Leader>
 xmap , <Leader>
 
-imap jk <Esc>          " jk: exit insert mode (faster than reaching for Escape)
+inoremap jk <Esc>      " jk: exit insert mode (faster than reaching for Escape)
 
 " ── Window operations ─────────────────────────────────────────────────────────
 
