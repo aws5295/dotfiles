@@ -36,7 +36,7 @@ cde() {
   if [[ -n "$env_id" ]]; then
     # --start will start the environment if it isn't running and wait until it's ready
     echo "Connecting to '$name'..."
-    ona environment ssh "$env_id" -- -t "zsh -i -c 't $name --layout web'"
+    ona environment ssh "$env_id" -- -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
 
   else
     # No environment with that name — create a new one from the ONA_PROJECT_ID project.
@@ -60,6 +60,6 @@ cde() {
     fi
 
     echo "Connecting..."
-    ona environment ssh "$env_id" -- -t "zsh -i -c 't $name --layout web'"
+    ona environment ssh "$env_id" -- -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
   fi
 }
