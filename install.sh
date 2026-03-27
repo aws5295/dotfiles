@@ -141,6 +141,8 @@ if command -v tmux &>/dev/null; then
   else
     info "TPM already installed, skipping"
   fi
+  info "installing tmux plugins..."
+  ~/.tmux/plugins/tpm/bin/install_plugins
 else
   warn "tmux not found — skipping TPM install"
 fi
@@ -151,11 +153,19 @@ fi
 # We verify it actually works before proceeding.
 if command -v code &>/dev/null && code --list-extensions &>/dev/null; then
   info "installing VSCode extensions..."
+  installed_exts="$(code --list-extensions | tr '[:upper:]' '[:lower:]')"
   grep -v '^\s*#' "$DOTFILES/vscode/extensions" | grep -v '^\s*$' | while read -r ext; do
-    code --install-extension "$ext" --force || warn "failed to install extension: $ext"
+    if echo "$installed_exts" | grep -qx "$(echo "$ext" | tr '[:upper:]' '[:lower:]')"; then
+      info "  $ext already installed, skipping"
+    else
+      code --install-extension "$ext" || warn "failed to install extension: $ext"
+    fi
   done
 else
   warn "code not found or does not support extension installs — skipping"
 fi
+
+# ── Work (Vanta) setup ────────────────────────────────────────────────────────
+bash "$DOTFILES/work/vanta-install.sh"
 
 info "done. open a new shell or run: exec zsh"
