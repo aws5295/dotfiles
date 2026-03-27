@@ -26,3 +26,9 @@ case "$(uname)" in
     [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
     ;;
 esac
+
+# ── Prompt context ────────────────────────────────────────────────────────────
+# DOT_CONTEXT drives the user@<name> segment of the starship prompt.
+# Fall back to the short hostname if not already set (e.g. via secrets/local.zsh).
+# work/vanta.zsh overrides this to "CDE" when running inside a Gitpod environment.
+export DOT_CONTEXT="${DOT_CONTEXT:-$(hostname -s)}"

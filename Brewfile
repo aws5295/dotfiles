@@ -9,6 +9,7 @@ brew "actionlint"    # lint workflow files
 brew "zsh"
 brew "tmux"
 brew "fzf"
+brew "starship"          # cross-shell prompt
 
 # ── Editors ───────────────────────────────────────────────────────────────────
 brew "vim"

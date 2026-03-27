@@ -1,0 +1,131 @@
+# Starship prompt — Dracula colours, Tokyo Night-inspired layout
+# https://starship.rs/presets/tokyo-night (layout reference)
+#
+# Dracula palette:
+#   Background:    #282a36    Current Line: #44475a
+#   Comment:       #6272a4    Foreground:   #f8f8f2
+#   Cyan:          #8be9fd    Green:        #50fa7b
+#   Orange:        #ffb86c    Pink:         #ff79c6
+#   Purple:        #bd93f9    Red:          #ff5555
+#   Yellow:        #f1fa8c
+#
+# Nerd Font glyphs used:
+#   U+E0B6  — rounded left cap (opening)
+#   U+E0B0  — right-pointing filled arrow (segment separator)
+#   U+E0B4  — rounded right cap (closing)
+#   U+E0A0  — git branch symbol
+#   U+F898  — Node.js
+#   U+E7A8  — Rust
+#   U+E627  — Go
+#   U+E73D  — PHP
+
+format = """
+[\uE0B6](fg:#bd93f9)\
+$username\
+$env_var\
+[\uE0B0](bg:#44475a fg:#bd93f9)\
+$directory\
+[\uE0B0](fg:#44475a bg:#6272a4)\
+$git_branch\
+$git_status\
+$git_state\
+[\uE0B0](fg:#6272a4 bg:#282a36)\
+$nodejs\
+$rust\
+$golang\
+$php\
+[\uE0B4](fg:#282a36)\
+$fill\
+$time\
+$line_break\
+$character"""
+
+# ── Segments ──────────────────────────────────────────────────────────────────
+
+[username]
+show_always = true
+style_user = "bg:#bd93f9 fg:#282a36"
+style_root = "bg:#bd93f9 fg:#282a36"
+format = '[ $user]($style)'
+
+# DOT_CONTEXT: set to "CDE" on Gitpod, custom name from secrets, or hostname fallback.
+# See platform.zsh and work/vanta.zsh for where this is set.
+[env_var.DOT_CONTEXT]
+variable = "DOT_CONTEXT"
+style = "bg:#bd93f9 fg:#282a36"
+format = '[@$env_value ]($style)'
+
+[directory]
+style = "bg:#44475a fg:#f8f8f2"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = "🌱"
+style = "bg:#6272a4 fg:#f8f8f2"
+# :$remote_branch only renders when remote differs from local
+format = '[ $symbol $branch(:$remote_branch) ]($style)'
+
+[git_status]
+style = "bg:#6272a4 fg:#f1fa8c"
+# Each symbol includes ${count} so you see e.g. +2 !3 ?1 ⇡2
+conflicted  = "~${count} "
+staged      = "+${count} "
+modified    = "!${count} "
+untracked   = "?${count} "
+deleted     = "\u2718${count} "   # ✘
+renamed     = "\u00BB${count} "   # »
+stashed     = "\u2605 "           # ★
+ahead       = "\u21E1${count} "   # ⇡
+behind      = "\u21E3${count} "   # ⇣
+diverged    = "\u21E1${ahead_count}\u21E3${behind_count} "
+up_to_date  = ""
+format      = '([$all_status$ahead_behind ]($style))'
+
+# Shown when a git operation is in progress (rebase, merge, cherry-pick, etc.)
+[git_state]
+style = "bg:#6272a4 fg:#ffb86c"
+format = '[\($state( $progress_current/$progress_total)\) ]($style)'
+
+[nodejs]
+symbol = "\uF898"
+style = "bg:#282a36 fg:#50fa7b"
+format = '[ $symbol ($version) ]($style)'
+
+[rust]
+symbol = "\uE7A8"
+style = "bg:#282a36 fg:#ff79c6"
+format = '[ $symbol ($version) ]($style)'
+
+[golang]
+symbol = "\uE627"
+style = "bg:#282a36 fg:#8be9fd"
+format = '[ $symbol ($version) ]($style)'
+
+[php]
+symbol = "\uE73D"
+style = "bg:#282a36 fg:#bd93f9"
+format = '[ $symbol ($version) ]($style)'
+
+[fill]
+symbol = " "
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "fg:#6272a4"
+format = "[ \uF017 $time ]($style)"
+
+[character]
+disabled = false
+success_symbol = '[❯](bold fg:#50fa7b)'
+error_symbol = '[❯](bold fg:#ff5555)'
+vimcmd_symbol = '[❮](bold fg:#bd93f9)'
