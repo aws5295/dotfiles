@@ -34,4 +34,15 @@ fi
 # Fallback: manual / git-clone install at ~/.fzf
 if [[ -d "$HOME/.fzf" ]]; then
   _fzf_load_shell_integration "$HOME/.fzf"
+  return
+fi
+
+# Fallback: system package manager install (Debian/Ubuntu via apt).
+# Shell integration lives at a different path and doesn't have a bin/ dir to add.
+if command -v fzf &>/dev/null && [[ -t 1 ]]; then
+  local sys_examples="/usr/share/doc/fzf/examples"
+  if [[ -f "$sys_examples/key-bindings.zsh" ]]; then
+    [[ -f "$sys_examples/completion.zsh" ]] && source "$sys_examples/completion.zsh"
+    source "$sys_examples/key-bindings.zsh"
+  fi
 fi
