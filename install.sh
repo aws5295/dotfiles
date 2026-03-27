@@ -73,6 +73,8 @@ ln -sfn "$DOTFILES/ag/ignore"       ~/.ignore        # ag/ripgrep ignore pattern
 ln -sfn "$DOTFILES"                 ~/.dotfiles       # convenience pointer to this repo
 mkdir -p ~/.claude
 ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
+mkdir -p ~/.config
+ln -sfn "$DOTFILES/starship/starship.toml" ~/.config/starship.toml      # starship prompt config
 
 # VSCode settings and the press-and-hold fix are only applied if VSCode is installed.
 # Settings path differs by OS: macOS uses ~/Library/..., Linux uses ~/.config/...
@@ -89,6 +91,18 @@ if command -v code &>/dev/null; then
   fi
 else
   warn "code not found — skipping VSCode settings symlink"
+fi
+
+# ── Starship (Linux only) ─────────────────────────────────────────────────────
+# On macOS, starship is installed via Homebrew (Brewfile). On Linux, use the
+# official install script. The --yes flag skips the interactive prompt.
+if [[ "$(uname)" == "Linux" ]]; then
+  if command -v starship &>/dev/null; then
+    info "starship already installed, skipping"
+  else
+    info "installing starship..."
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  fi
 fi
 
 # ── Zsh plugins ───────────────────────────────────────────────────────────────

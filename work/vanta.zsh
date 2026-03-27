@@ -6,6 +6,8 @@
 if [[ -n "$GITPOD_API_URL" ]]; then
   # Load Vanta secrets injected by the Gitpod environment
   [[ -f /etc/profile.d/ona-secrets.sh ]] && source /etc/profile.d/ona-secrets.sh
+  # Show "CDE" in the starship prompt context segment instead of the Gitpod hostname
+  export DOT_CONTEXT="CDE"
 fi
 
 # ── cde: cloud dev environment manager ───────────────────────────────────────
