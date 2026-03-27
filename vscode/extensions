@@ -3,11 +3,14 @@
 # Or run install.sh
 
 dracula-theme.theme-dracula
+esbenp.prettier-vscode
 gitpod.gitpod-flex
+isontheline.vscode-sysmon
 ms-vscode-remote.remote-containers
 ms-vscode-remote.remote-ssh
 ms-vscode-remote.remote-ssh-edit
 ms-vscode.remote-explorer
+streetsidesoftware.code-spell-checker
+TypeScriptTeam.native-preview
 vscode-icons-team.vscode-icons
 vscodevim.vim
-esbenp.prettier-vscode
