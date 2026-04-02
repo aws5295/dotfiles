@@ -52,6 +52,9 @@ brew "sd"                    # find & replace CLI
 brew "thefuck"               # corrects previous console commands
 brew "tree"
 
+# ── AI tools ──────────────────────────────────────────────────────────────────
+brew "rtk"                   # token reduction for Claude Code
+
 # ── Casks ─────────────────────────────────────────────────────────────────────
 cask "1password-cli"
 cask "iterm2"
