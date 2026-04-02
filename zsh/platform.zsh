@@ -22,6 +22,8 @@ case "$(uname)" in
     ;;
 
   Linux)
+    # Add ~/.local/bin to PATH (used by rtk and other user-installed binaries)
+    [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
     # Add Rust/Cargo binaries to PATH if Rust is installed
     [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
     ;;

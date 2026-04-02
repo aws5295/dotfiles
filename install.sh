@@ -179,6 +179,27 @@ else
   warn "code not found or does not support extension installs — skipping"
 fi
 
+# ── RTK (token reduction for Claude Code) ─────────────────────────────────────
+# On macOS, rtk is installed via Brewfile above.
+# On Linux, use the official install script → ~/.local/bin/rtk.
+if [[ "$(uname)" == "Linux" ]]; then
+  if command -v rtk &>/dev/null; then
+    info "rtk already installed, skipping"
+  else
+    info "installing rtk..."
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+    export PATH="$HOME/.local/bin:$PATH"   # make rtk available in this session
+  fi
+fi
+
+# Install the Claude Code PreToolUse hook (idempotent).
+if command -v rtk &>/dev/null; then
+  info "configuring rtk for Claude Code..."
+  rtk init -g --auto-patch
+else
+  warn "rtk not found — skipping rtk init (Claude Code hook not installed)"
+fi
+
 # ── Work (Vanta) setup ────────────────────────────────────────────────────────
 bash "$DOTFILES/work/vanta-install.sh"
 
