@@ -55,3 +55,12 @@ md() {
 }
 
 # }}}
+# gbD: interactively delete one or more local git branches {{{
+
+gbD() {
+  local branches
+  branches=$(git branch | grep -v '^\*' | grep -v '^main$' | sed 's/^[[:space:]]*//' | fzf -m --preview 'git log --oneline -10 {} --')
+  [[ -n "$branches" ]] && echo "$branches" | xargs git branch -D
+}
+
+# }}}

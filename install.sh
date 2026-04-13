@@ -75,6 +75,8 @@ mkdir -p ~/.claude
 ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/starship/starship.toml" ~/.config/starship.toml      # starship prompt config
+mkdir -p ~/.config/ghostty
+ln -sfn "$DOTFILES/ghostty/config" ~/.config/ghostty/config             # ghostty terminal config
 
 # VSCode settings and the press-and-hold fix are only applied if VSCode is installed.
 # Settings path differs by OS: macOS uses ~/Library/..., Linux uses ~/.config/...
