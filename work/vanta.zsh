@@ -12,9 +12,28 @@ fi
 
 # ── cde: cloud dev environment manager ───────────────────────────────────────
 # Usage:
-#   cde           — list all environments
-#   cde <name>    — connect to the named environment (starts it if stopped,
-#                   creates a new ona environment if not found)
+#   cde                  — list all environments
+#   cde <name>           — connect via SSH (starts/creates if needed)
+#   cde <name> --mosh    — connect via mosh (roams through sleep/wake, UDP)
+#
+# SSH keepalives: SSH will detect a dead connection within ~90s of a drop
+# (e.g. after sleep) and exit cleanly. The terminal is reset automatically
+# on exit so you never need to run `reset` after a disconnection.
+_cde_ssh_connect() {
+  local env_id="$1" name="$2"
+  # ServerAliveInterval/CountMax: send keepalives every 30s; give up after 3
+  # missed replies (~90s), so SSH exits cleanly rather than hanging after sleep.
+  ona environment ssh "$env_id" -- \
+    -o ServerAliveInterval=30 \
+    -o ServerAliveCountMax=3 \
+    -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
+  # Reset terminal state after disconnect — fixes garbled output after sleep/wake
+  stty sane 2>/dev/null
+  tput cnorm 2>/dev/null  # restore cursor visibility
+  printf '\033[?1049l'    # exit alternate screen (if an app left it active)
+  printf '\033[0m'        # reset text attributes
+}
+
 cde() {
   if [[ $# -eq 0 ]]; then
     echo "Environments:"
@@ -32,14 +51,12 @@ cde() {
   local name="$1"
 
   # Fetch all environments and look for one matching the given name
-  local env_id env_phase
+  local env_id
   env_id=$(ona environment list -o json 2>/dev/null | jq -r ".[] | select(.metadata.name == \"$name\") | .id" 2>/dev/null | head -n1)
 
   if [[ -n "$env_id" ]]; then
-    # --start will start the environment if it isn't running and wait until it's ready
     echo "Connecting to '$name'..."
-    ona environment ssh "$env_id" -- -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
-
+    _cde_ssh_connect "$env_id" "$name"
   else
     # No environment with that name — create a new one from the ONA_PROJECT_ID project.
     # IDs are sourced from secrets/local.zsh (gitignored).
@@ -62,6 +79,10 @@ cde() {
     fi
 
     echo "Connecting..."
-    ona environment ssh "$env_id" -- -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
+    _cde_ssh_connect "$env_id" "$name"
   fi
 }
+# Note: mosh was investigated but ONA's VPC firewalls UDP 60000-61000, which
+# mosh requires. If ONA opens those ports in the future, the shim approach
+# works — the missing piece was --experimental-remote-ip=local + --bind-server=any
+# with the real CDE IP fetched via a preliminary SSH call.

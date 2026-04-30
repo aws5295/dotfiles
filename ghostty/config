@@ -1,1 +1,23 @@
 theme = dracula
+
+# ── Shell integration ──────────────────────────────────────────────────────────
+# Enables semantic prompt zones: scroll-to-prompt (Cmd+Shift+Up/Down),
+# prompt highlighting, and smarter selection. Works through SSH sessions.
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+# ── SSH / remote session UX ───────────────────────────────────────────────────
+# Keep a local scrollback buffer for before tmux attaches and for the
+# brief window after SSH exits (where tmux output would otherwise vanish).
+scrollback-limit = 10000
+
+# Copy selected text directly to the system clipboard — no Cmd+C needed.
+# Avoids the common pain of losing a selection when switching focus.
+copy-on-select = clipboard
+
+# Don't ask for confirmation when closing a surface — tmux keeps sessions alive.
+confirm-close-surface = false
+
+# ── Window ────────────────────────────────────────────────────────────────────
+window-save-state = always
+mouse-hide-while-typing = true

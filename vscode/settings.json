@@ -114,5 +114,10 @@
         "oxlint",
         "parameterizes",
         "vanta"
-    ]
+    ],
+    "git.blame.statusBarItem.enabled": true,
+    "git.blame.editorDecoration.enabled": true,
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

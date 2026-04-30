@@ -95,6 +95,13 @@ else
   warn "code not found — skipping VSCode settings symlink"
 fi
 
+# ── Linux packages ────────────────────────────────────────────────────────────
+# Packages that are on macOS via Homebrew (Brewfile) but need apt on Linux CDEs.
+if [[ "$(uname)" == "Linux" ]] && command -v apt-get &>/dev/null; then
+  info "installing Linux packages..."
+  sudo apt-get install -y -q mosh
+fi
+
 # ── Starship (Linux only) ─────────────────────────────────────────────────────
 # On macOS, starship is installed via Homebrew (Brewfile). On Linux, use the
 # official install script. The --yes flag skips the interactive prompt.
