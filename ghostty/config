@@ -6,6 +6,12 @@ theme = dracula
 shell-integration = detect
 shell-integration-features = cursor,sudo,title
 
+# ── Bell ──────────────────────────────────────────────────────────────────────
+# Trigger a system notification (with sound) on terminal bell.
+# Used by the CDE terminal bell hook so you hear audio when Claude finishes
+# on a remote machine even if Ghostty is in the background.
+bell-features = system
+
 # ── SSH / remote session UX ───────────────────────────────────────────────────
 # Keep a local scrollback buffer for before tmux attaches and for the
 # brief window after SSH exits (where tmux output would otherwise vanish).

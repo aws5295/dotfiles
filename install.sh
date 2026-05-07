@@ -204,9 +204,73 @@ fi
 # Install the Claude Code PreToolUse hook (idempotent).
 if command -v rtk &>/dev/null; then
   info "configuring rtk for Claude Code..."
-  rtk init -g --auto-patch
+  echo "n" | rtk init -g --auto-patch
 else
   warn "rtk not found — skipping rtk init (Claude Code hook not installed)"
+fi
+
+# ── peon-ping (macOS only) ────────────────────────────────────────────────────
+# Registers Claude Code hooks and installs sound packs. peon-ping-setup is
+# non-interactive — it auto-detects installed IDEs and wires them up.
+# We pass our three target packs plus the bundled "peon" pack as a baseline.
+# On re-runs the setup call is skipped (config exists); pack install is idempotent.
+if [[ "$(uname)" == "Darwin" ]] && command -v peon-ping-setup &>/dev/null; then
+  PEON_CONFIG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/peon-ping/config.json"
+  if [[ ! -f "$PEON_CONFIG" ]]; then
+    info "setting up peon-ping..."
+    peon-ping-setup --packs=peon,lebowski_the_dude,ocarina_of_time,dota2_invoker
+  else
+    info "peon-ping already configured, ensuring packs are installed..."
+    peon packs install lebowski_the_dude,ocarina_of_time,dota2_invoker 2>/dev/null || true
+  fi
+  # Set default pack and random rotation across all three packs
+  peon packs use lebowski_the_dude
+  peon rotation random
+  if command -v jq &>/dev/null && [[ -f "$PEON_CONFIG" ]]; then
+    jq '.pack_rotation = ["lebowski_the_dude", "ocarina_of_time", "dota2_invoker"] | .volume = 1.0' \
+      "$PEON_CONFIG" > "$PEON_CONFIG.tmp" && mv "$PEON_CONFIG.tmp" "$PEON_CONFIG"
+    info "peon-ping rotation set: lebowski_the_dude, ocarina_of_time, dota2_invoker (volume: 0.8)"
+  fi
+else
+  [[ "$(uname)" == "Darwin" ]] && warn "peon-ping-setup not found — run 'brew bundle' first"
+fi
+
+# ── Terminal bell hook (Linux CDEs) ───────────────────────────────────────────
+# On headless Linux CDEs there is no audio device, so peon-ping cannot run.
+# Instead, emit the terminal bell character (\a) on task complete. SSH
+# forwards it to the local Ghostty terminal, which plays a system notification.
+if [[ "$(uname)" == "Linux" ]]; then
+  info "adding terminal bell Stop hook for Claude Code..."
+  python3 - <<'PYEOF'
+import json, os
+
+path = os.path.expanduser('~/.claude/settings.json')
+settings = {}
+if os.path.exists(path):
+    with open(path) as f:
+        try:
+            settings = json.load(f)
+        except json.JSONDecodeError:
+            pass
+
+hooks = settings.setdefault('hooks', {})
+stop_hooks = hooks.setdefault('Stop', [])
+
+bell_cmd = "printf '\\a' > /dev/tty"
+already = any(
+    any('> /dev/tty' in h.get('command', '') and 'printf' in h.get('command', '') for h in entry.get('hooks', []))
+    for entry in stop_hooks
+)
+if not already:
+    stop_hooks.append({'matcher': '', 'hooks': [{'type': 'command', 'command': bell_cmd}]})
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as f:
+        json.dump(settings, f, indent=2)
+        f.write('\n')
+    print('[info] terminal bell hook added to ~/.claude/settings.json')
+else:
+    print('[info] terminal bell hook already present, skipping')
+PYEOF
 fi
 
 # ── Work (Vanta) setup ────────────────────────────────────────────────────────
