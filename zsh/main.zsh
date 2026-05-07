@@ -64,3 +64,10 @@ for f in ~/.dotfiles/work/*.zsh; do
 done
 
 command -v thefuck >/dev/null 2>&1 && eval $(thefuck --alias)
+
+# bun completions
+[ -s "/Users/adamshaw/.bun/_bun" ] && source "/Users/adamshaw/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
