@@ -3,3 +3,4 @@
 
 export EDITOR="vim"   # default editor used by git, crontab, etc.
 export RTK_TELEMETRY_DISABLED=1
+. "$HOME/.cargo/env"
