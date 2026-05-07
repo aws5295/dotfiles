@@ -54,6 +54,8 @@ brew "tree"
 
 # ── AI tools ──────────────────────────────────────────────────────────────────
 brew "rtk"                   # token reduction for Claude Code
+tap "PeonPing/tap"
+brew "peon-ping"             # audio notifications for Claude Code (game voice lines)
 
 # ── Casks ─────────────────────────────────────────────────────────────────────
 cask "1password-cli"
