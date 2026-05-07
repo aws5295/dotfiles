@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOTFILES="$(cd "$(dirname "$0")" && pwd)"
+DOTFILES="$(cd "$(dirname "$0")" && pwd -P)"
 
 # Detect interactive mode: check for explicit flag or whether stdin is a TTY.
 # On provisioned machines (e.g. Gitpod) stdin is not a TTY, so prompts are skipped automatically.
