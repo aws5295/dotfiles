@@ -215,22 +215,18 @@ fi
 # We pass our three target packs plus the bundled "peon" pack as a baseline.
 # On re-runs the setup call is skipped (config exists); pack install is idempotent.
 if [[ "$(uname)" == "Darwin" ]] && command -v peon-ping-setup &>/dev/null; then
-  PEON_CONFIG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/peon-ping/config.json"
-  if [[ ! -f "$PEON_CONFIG" ]]; then
+  PEON_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/peon-ping"
+  PEON_CONFIG="$PEON_CONFIG_DIR/config.json"
+  if [[ ! -d "$PEON_CONFIG_DIR" ]]; then
     info "setting up peon-ping..."
     peon-ping-setup --packs=peon,lebowski_the_dude,ocarina_of_time,dota2_invoker
   else
     info "peon-ping already configured, ensuring packs are installed..."
     peon packs install lebowski_the_dude,ocarina_of_time,dota2_invoker 2>/dev/null || true
   fi
-  # Set default pack and random rotation across all three packs
-  peon packs use lebowski_the_dude
-  peon rotation random
-  if command -v jq &>/dev/null && [[ -f "$PEON_CONFIG" ]]; then
-    jq '.pack_rotation = ["lebowski_the_dude", "ocarina_of_time", "dota2_invoker"] | .volume = 1.0' \
-      "$PEON_CONFIG" > "$PEON_CONFIG.tmp" && mv "$PEON_CONFIG.tmp" "$PEON_CONFIG"
-    info "peon-ping rotation set: lebowski_the_dude, ocarina_of_time, dota2_invoker (volume: 0.8)"
-  fi
+  # Manage config via dotfiles — symlink replaces any generated config
+  ln -sfn "$DOTFILES/claude/peon-ping/config.json" "$PEON_CONFIG"
+  info "peon-ping config symlinked from dotfiles"
 else
   [[ "$(uname)" == "Darwin" ]] && warn "peon-ping-setup not found — run 'brew bundle' first"
 fi
