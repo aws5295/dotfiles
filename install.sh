@@ -73,6 +73,7 @@ ln -sfn "$DOTFILES/ag/ignore"       ~/.ignore        # ag/ripgrep ignore pattern
 ln -sfn "$DOTFILES"                 ~/.dotfiles       # convenience pointer to this repo
 mkdir -p ~/.claude
 ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
+ln -sfn "$DOTFILES/claude/settings.json"   ~/.claude/settings.json     # Claude Code settings
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/starship/starship.toml" ~/.config/starship.toml      # starship prompt config
 mkdir -p ~/.config/ghostty
@@ -219,10 +220,10 @@ if [[ "$(uname)" == "Darwin" ]] && command -v peon-ping-setup &>/dev/null; then
   PEON_CONFIG="$PEON_CONFIG_DIR/config.json"
   if [[ ! -d "$PEON_CONFIG_DIR" ]]; then
     info "setting up peon-ping..."
-    peon-ping-setup --packs=peon,lebowski_the_dude,ocarina_of_time,dota2_invoker
+    peon-ping-setup --packs=peon,ocarina_of_time,dota2_invoker
   else
     info "peon-ping already configured, ensuring packs are installed..."
-    peon packs install lebowski_the_dude,ocarina_of_time,dota2_invoker 2>/dev/null || true
+    peon packs install ocarina_of_time,dota2_invoker 2>/dev/null || true
   fi
   # Manage config via dotfiles — symlink replaces any generated config
   ln -sfn "$DOTFILES/claude/peon-ping/config.json" "$PEON_CONFIG"
