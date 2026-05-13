@@ -1,6 +1,6 @@
 {
-  "default_pack": "lebowski_the_dude",
-  "volume": 0.7,
+  "default_pack": "ocarina_of_time",
+  "volume": 0.8,
   "enabled": true,
   "desktop_notifications": true,
   "categories": {
@@ -22,7 +22,6 @@
   "suppress_delegate_sessions": false,
   "no_rc": false,
   "pack_rotation": [
-    "lebowski_the_dude",
     "ocarina_of_time",
     "dota2_invoker"
   ],
