@@ -1,4 +1,4 @@
-# VSCode extensions — one extension ID per line
+# VSCode/Cursor extensions — one extension ID per line
 # Install manually: cat vscode/extensions | xargs -L1 code --install-extension
 # Or run install.sh
 

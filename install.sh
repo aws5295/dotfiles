@@ -15,6 +15,8 @@ warn() { echo "[warn] $*"; }
 info() { echo "[info] $*"; }
 die()  { echo "[error] $*" >&2; exit 1; }
 
+source "$DOTFILES/scripts/editor_extensions.sh"
+
 # ── Pre-flight checks ─────────────────────────────────────────────────────────
 # Fail fast if hard dependencies are missing before doing any work
 command -v git  &>/dev/null || die "git is required but not installed"
@@ -171,23 +173,10 @@ else
   warn "tmux not found — skipping TPM install"
 fi
 
-# ── VSCode extensions ──────────────────────────────────────────────────────────
-# Install all extensions listed in vscode/extensions (one ID per line, # comments ignored).
-# Some environments (e.g. Linux CDEs) have a 'code' stub that doesn't support extension installs.
-# We verify it actually works before proceeding.
-if command -v code &>/dev/null && code --list-extensions &>/dev/null; then
-  info "installing VSCode extensions..."
-  installed_exts="$(code --list-extensions | tr '[:upper:]' '[:lower:]')"
-  grep -v '^\s*#' "$DOTFILES/vscode/extensions" | grep -v '^\s*$' | while read -r ext; do
-    if echo "$installed_exts" | grep -qx "$(echo "$ext" | tr '[:upper:]' '[:lower:]')"; then
-      info "  $ext already installed, skipping"
-    else
-      code --install-extension "$ext" || warn "failed to install extension: $ext"
-    fi
-  done
-else
-  warn "code not found or does not support extension installs — skipping"
-fi
+# ── Editor extensions ──────────────────────────────────────────────────────────
+# Install all extensions listed in vscode/extensions for installed VSCode-family editors.
+install_editor_extensions code "VSCode"
+install_editor_extensions cursor "Cursor"
 
 # ── RTK (token reduction for Claude Code) ─────────────────────────────────────
 # On macOS, rtk is installed via Brewfile above.
