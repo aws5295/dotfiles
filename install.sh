@@ -15,7 +15,69 @@ warn() { echo "[warn] $*"; }
 info() { echo "[info] $*"; }
 die()  { echo "[error] $*" >&2; exit 1; }
 
+# shellcheck source=/dev/null
 source "$DOTFILES/scripts/editor_extensions.sh"
+
+patch_codex_config() {
+  local config="$HOME/.codex/config.toml"
+  local tmp
+
+  mkdir -p "$(dirname "$config")"
+  touch "$config"
+  tmp="$(mktemp)"
+
+  awk '
+    function print_managed_block() {
+      print "model = \"gpt-5.5\""
+      print "model_reasoning_effort = \"high\""
+      print "project_root_markers = [\".git\", \"package.json\", \"pnpm-workspace.yaml\", \"yarn.lock\", \"tsconfig.json\", \"MAINTAINERS\", \"Brewfile\"]"
+      print "notify = [\"bash\", \"-lc\", \"exec \\\"$HOME/.dotfiles/scripts/codex/notify-peon.sh\\\"\"]"
+      print ""
+      inserted = 1
+    }
+
+    BEGIN {
+      inserted = 0
+      in_top_level = 1
+    }
+
+    in_top_level && $0 ~ /^[[:space:]]*\[/ {
+      if (!inserted) {
+        print_managed_block()
+      }
+      in_top_level = 0
+      print
+      next
+    }
+
+    in_top_level && $0 ~ /^[[:space:]]*(model|model_reasoning_effort|project_root_markers|notify)[[:space:]]*=/ {
+      next
+    }
+
+    { print }
+
+    END {
+      if (in_top_level && !inserted) {
+        print_managed_block()
+      }
+    }
+  ' "$config" > "$tmp"
+
+  mv "$tmp" "$config"
+}
+
+install_codex_agents() {
+  local agents="$HOME/.codex/AGENTS.md"
+  local rtk="$HOME/.codex/RTK.md"
+  local tmp
+
+  mkdir -p "$HOME/.codex"
+  ln -sfn "$DOTFILES/codex/RTK.md" "$rtk"
+
+  tmp="$(mktemp)"
+  sed "s#__CODEX_RTK_PATH__#$rtk#g" "$DOTFILES/codex/AGENTS.md.template" > "$tmp"
+  mv "$tmp" "$agents"
+}
 
 # ── Pre-flight checks ─────────────────────────────────────────────────────────
 # Fail fast if hard dependencies are missing before doing any work
@@ -48,7 +110,7 @@ if [[ ! -f ~/.gitconfig.local ]]; then
     warn "skipping ~/.gitconfig.local creation in non-interactive mode"
   fi
 else
-  info "~/.gitconfig.local already exists, skipping"
+  info "$HOME/.gitconfig.local already exists, skipping"
 fi
 
 # ── Homebrew packages ─────────────────────────────────────────────────────────
@@ -58,6 +120,24 @@ if command -v brew &>/dev/null; then
   brew bundle --file="$DOTFILES/Brewfile"
 else
   warn "brew not found — skipping Brewfile install"
+fi
+
+# ── Codex CLI (Linux CDEs) ───────────────────────────────────────────────────
+# On macOS, Codex is installed by the Homebrew cask above. On Linux CDEs, use
+# npm when available and leave auth/state to Codex itself.
+if [[ "$(uname)" == "Linux" ]]; then
+  if command -v codex &>/dev/null; then
+    info "codex already installed, skipping"
+  elif command -v npm &>/dev/null; then
+    info "installing Codex CLI..."
+    if npm install -g @openai/codex; then
+      info "Codex CLI installed"
+    else
+      warn "Codex CLI install failed — run manually: npm install -g @openai/codex"
+    fi
+  else
+    warn "npm not found — install Codex manually with: npm install -g @openai/codex"
+  fi
 fi
 
 # ── Symlinks ──────────────────────────────────────────────────────────────────
@@ -76,6 +156,11 @@ ln -sfn "$DOTFILES"                 ~/.dotfiles       # convenience pointer to t
 mkdir -p ~/.claude
 ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
 ln -sfn "$DOTFILES/claude/settings.json"   ~/.claude/settings.json     # Claude Code settings
+mkdir -p ~/.codex
+install_codex_agents                                                     # Codex global guidance + RTK
+ln -sfn "$DOTFILES/codex/hooks.json"       ~/.codex/hooks.json          # Codex hooks
+patch_codex_config
+info "Codex config defaults patched"
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/starship/starship.toml" ~/.config/starship.toml      # starship prompt config
 mkdir -p ~/.config/ghostty
