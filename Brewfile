@@ -59,5 +59,6 @@ brew "peon-ping"             # audio notifications for Claude Code (game voice l
 
 # ── Casks ─────────────────────────────────────────────────────────────────────
 cask "1password-cli"
+cask "codex"                 # OpenAI Codex desktop app and CLI
 cask "iterm2"
 cask "font-jetbrains-mono-nerd-font"   # required for tmux/powerline symbols to render correctly
