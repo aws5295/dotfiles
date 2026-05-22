@@ -64,3 +64,10 @@ gbD() {
 }
 
 # }}}
+# cx: launch Codex from the intended repository root {{{
+
+cx() {
+  ~/.dotfiles/scripts/codex/cx "$@"
+}
+
+# }}}
