@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: cx [--print-root] [path] [codex args...]
+
+Resolve a likely repository root, then launch Codex with `codex --cd <root>`.
+If path is omitted, cx tries the current git/root-marker directory first, then
+workspace mount locations commonly used by cloud desktops.
+EOF
+}
+
+print_root=false
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+  usage
+  exit 0
+fi
+if [[ "${1:-}" == "--print-root" ]]; then
+  print_root=true
+  shift
+fi
+
+target=""
+if [[ $# -gt 0 && "$1" != -* && -e "$1" ]]; then
+  target="$1"
+  shift
+fi
+
+markers=(".git" "package.json" "pnpm-workspace.yaml" "yarn.lock" "tsconfig.json" "MAINTAINERS" "Brewfile")
+candidates=()
+
+canonical_dir() {
+  local path="$1"
+  if [[ -f "$path" ]]; then
+    path="$(dirname "$path")"
+  fi
+  (cd "$path" 2>/dev/null && pwd -P)
+}
+
+has_marker() {
+  local dir="$1"
+  local marker
+  [[ -d "$dir" ]] || return 1
+  for marker in "${markers[@]}"; do
+    [[ -e "$dir/$marker" ]] && return 0
+  done
+  return 1
+}
+
+add_candidate() {
+  local dir="$1"
+  local existing
+  dir="$(canonical_dir "$dir" 2>/dev/null || true)"
+  [[ -n "$dir" ]] || return 0
+  has_marker "$dir" || return 0
+  for existing in "${candidates[@]}"; do
+    [[ "$existing" == "$dir" ]] && return 0
+  done
+  candidates+=("$dir")
+}
+
+find_upward_root() {
+  local dir="$1"
+  dir="$(canonical_dir "$dir" 2>/dev/null || true)"
+  [[ -n "$dir" ]] || return 1
+
+  if git_root="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)"; then
+    canonical_dir "$git_root"
+    return 0
+  fi
+
+  while [[ "$dir" != "/" ]]; do
+    if has_marker "$dir"; then
+      printf '%s\n' "$dir"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+  return 1
+}
+
+if [[ -n "$target" ]]; then
+  if root="$(find_upward_root "$target")"; then
+    candidates+=("$root")
+  fi
+else
+  if root="$(find_upward_root "$PWD")"; then
+    candidates+=("$root")
+  fi
+
+  if [[ ${#candidates[@]} -eq 0 ]]; then
+    if [[ -n "${CX_SEARCH_DIRS:-}" ]]; then
+      IFS=':' read -r -a search_dirs <<< "$CX_SEARCH_DIRS"
+    else
+      search_dirs=("/workspaces" "/workspace" "$HOME/co" "$HOME/work" "$HOME/src")
+    fi
+
+    for parent in "${search_dirs[@]}"; do
+      add_candidate "$parent"
+      if [[ -d "$parent" ]]; then
+        for child in "$parent"/*; do
+          [[ -e "$child" ]] || continue
+          add_candidate "$child"
+        done
+      fi
+    done
+  fi
+fi
+
+if [[ ${#candidates[@]} -eq 0 ]]; then
+  echo "cx: no repository root found" >&2
+  echo "cx: pass an explicit path or run from inside a checkout" >&2
+  exit 1
+fi
+
+selected=""
+if [[ ${#candidates[@]} -eq 1 ]]; then
+  selected="${candidates[0]}"
+elif command -v fzf >/dev/null 2>&1 && [[ -t 0 && -t 1 ]]; then
+  selected="$(printf '%s\n' "${candidates[@]}" | fzf --prompt='Codex root> ')"
+else
+  echo "cx: multiple repository roots found and fzf is unavailable:" >&2
+  printf '  %s\n' "${candidates[@]}" >&2
+  echo "cx: pass one path explicitly" >&2
+  exit 2
+fi
+
+if [[ "$print_root" == true ]]; then
+  printf '%s\n' "$selected"
+  exit 0
+fi
+
+if ! command -v codex >/dev/null 2>&1; then
+  echo "cx: codex is not installed or not on PATH" >&2
+  exit 127
+fi
+
+exec codex --cd "$selected" "$@"
