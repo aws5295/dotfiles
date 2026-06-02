@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": "bash ~/.claude/hooks/peon-ping/adapters/cursor.sh stop",
+        "timeout": 10
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "bash ~/.claude/hooks/peon-ping/adapters/cursor.sh beforeShellExecution",
+        "timeout": 10
+      }
+    ]
+  }
+}
