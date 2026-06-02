@@ -119,5 +119,7 @@
     "git.blame.editorDecoration.enabled": true,
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilotcli:claude-sonnet-4.6"
 }
