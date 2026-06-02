@@ -155,7 +155,14 @@ ln -sfn "$DOTFILES/ag/ignore"       ~/.ignore        # ag/ripgrep ignore pattern
 ln -sfn "$DOTFILES"                 ~/.dotfiles       # convenience pointer to this repo
 mkdir -p ~/.claude
 ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude Code keybindings
-ln -sfn "$DOTFILES/claude/settings.json"   ~/.claude/settings.json     # Claude Code settings
+# macOS: copy settings (not symlink) so peon-ping-setup can add machine-local hooks
+# without writing back through the symlink into the shared dotfiles file.
+# Linux/CDEs: symlink so settings stay current with dotfiles (no peon-ping on headless).
+if [[ "$(uname)" == "Darwin" ]]; then
+  cp "$DOTFILES/claude/settings.json" ~/.claude/settings.json
+else
+  ln -sfn "$DOTFILES/claude/settings.json" ~/.claude/settings.json
+fi
 mkdir -p ~/.codex
 install_codex_agents                                                     # Codex global guidance + RTK
 ln -sfn "$DOTFILES/codex/hooks.json"       ~/.codex/hooks.json          # Codex hooks
@@ -288,17 +295,14 @@ fi
 # Registers Claude Code hooks and installs sound packs. peon-ping-setup is
 # non-interactive — it auto-detects installed IDEs and wires them up.
 # We pass our three target packs plus the bundled "peon" pack as a baseline.
-# On re-runs the setup call is skipped (config exists); pack install is idempotent.
+# Always run peon-ping-setup so hooks are re-wired into the local settings.json copy
+# (install.sh uses cp on macOS so the shared dotfiles file stays hook-free).
 if [[ "$(uname)" == "Darwin" ]] && command -v peon-ping-setup &>/dev/null; then
   PEON_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/peon-ping"
   PEON_CONFIG="$PEON_CONFIG_DIR/config.json"
-  if [[ ! -d "$PEON_CONFIG_DIR" ]]; then
-    info "setting up peon-ping..."
-    peon-ping-setup --packs=peon,ocarina_of_time,dota2_invoker
-  else
-    info "peon-ping already configured, ensuring packs are installed..."
-    peon packs install ocarina_of_time,dota2_invoker 2>/dev/null || true
-  fi
+  info "setting up peon-ping..."
+  peon-ping-setup --packs=peon,ocarina_of_time,dota2_invoker
+  peon packs install ocarina_of_time,dota2_invoker 2>/dev/null || true
   # Manage config via dotfiles — symlink replaces any generated config
   ln -sfn "$DOTFILES/claude/peon-ping/config.json" "$PEON_CONFIG"
   info "peon-ping config symlinked from dotfiles"
@@ -327,7 +331,7 @@ if os.path.exists(path):
 hooks = settings.setdefault('hooks', {})
 stop_hooks = hooks.setdefault('Stop', [])
 
-bell_cmd = "printf '\\a' > /dev/tty"
+bell_cmd = "printf '\\a' > /dev/tty 2>/dev/null || true"
 already = any(
     any('> /dev/tty' in h.get('command', '') and 'printf' in h.get('command', '') for h in entry.get('hooks', []))
     for entry in stop_hooks
