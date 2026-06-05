@@ -1,6 +1,6 @@
 {
     // ── Editor ────────────────────────────────────────────────────────────────
-    "editor.fontSize": 16, // hide line numbers (using relative numbers via vim plugin instead)
+    "editor.fontSize": 16,
 
     // ── Emmet ─────────────────────────────────────────────────────────────────
     // Allow Emmet abbreviations to expand in JSX files (e.g. div.foo → <div className="foo">)
@@ -9,6 +9,8 @@
     },
 
     // ── VSCode Vim ────────────────────────────────────────────────────────────
+    "editor.lineNumbers": "on",       // show absolute line numbers
+    "vim.relativeLineNumbers": false, // use absolute line numbers (not relative)
     "vim.useSystemClipboard": true,   // yank/paste uses the system clipboard (same as vim's clipboard=unnamed)
     "vim.incsearch": true,            // highlight search matches as you type
     "vim.hlsearch": true,             // keep matches highlighted after searching

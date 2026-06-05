@@ -34,8 +34,8 @@ set showcmd
 " Show cursor line and column number in the status line
 set ruler
 
-" Show line numbers relative to cursor position (easier to use with motion commands like 5j)
-set relativenumber
+" Show absolute line numbers
+set number
 
 " Allow switching away from an unsaved buffer without being forced to save first.
 " Vim will warn if you quit with unsaved hidden buffers.
