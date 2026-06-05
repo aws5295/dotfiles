@@ -19,6 +19,18 @@ fi
 
 name="${args[0]}"
 
+# If the tmux server has no sessions (e.g. after a CDE restart), attempt to
+# restore from tmux-resurrect before falling back to the layout script.
+# This preserves manually-added windows and panes across CDE hibernations.
+if ! tmux list-sessions &>/dev/null; then
+  restore_script="$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
+  if [[ -x "$restore_script" ]]; then
+    tmux new-session -d -s _tmux_restore_bootstrap
+    "$restore_script" 2>/dev/null
+    tmux kill-session -t _tmux_restore_bootstrap 2>/dev/null || true
+  fi
+fi
+
 if tmux has-session -t "$name" 2>/dev/null; then
   tmux attach -t "$name"
 elif [[ -n "$layout" ]]; then
