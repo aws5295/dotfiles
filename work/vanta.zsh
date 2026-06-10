@@ -19,19 +19,33 @@ fi
 # SSH keepalives: SSH will detect a dead connection within ~90s of a drop
 # (e.g. after sleep) and exit cleanly. The terminal is reset automatically
 # on exit so you never need to run `reset` after a disconnection.
+_cde_reset_terminal() {
+  stty sane 2>/dev/null
+  printf '\033[?1049l'   # exit alternate screen
+  printf '\033[?1000l'   # disable X10 mouse reporting
+  printf '\033[?1002l'   # disable mouse button event reporting
+  printf '\033[?1003l'   # disable any-event mouse reporting
+  printf '\033[?1006l'   # disable SGR mouse mode (source of ^[[<N;N;NM garbage)
+  printf '\033[?1015l'   # disable URXVT mouse mode
+  printf '\033[?25h'     # show cursor
+  printf '\033[0m'       # reset text attributes
+  tput cnorm 2>/dev/null
+}
+
 _cde_ssh_connect() {
   local env_id="$1" name="$2"
+  # Pre-connection reset: if a previous session died uncleanly and left the
+  # terminal in mouse-reporting mode, this prevents ona's progress output from
+  # printing as raw escape sequences (^[[<35;126;37M...) before SSH connects.
+  _cde_reset_terminal
   # ServerAliveInterval/CountMax: send keepalives every 30s; give up after 3
   # missed replies (~90s), so SSH exits cleanly rather than hanging after sleep.
   ona environment ssh "$env_id" -- \
     -o ServerAliveInterval=30 \
     -o ServerAliveCountMax=3 \
     -t "TERM=xterm-256color zsh -i -c 't $name --layout web'"
-  # Reset terminal state after disconnect — fixes garbled output after sleep/wake
-  stty sane 2>/dev/null
-  tput cnorm 2>/dev/null  # restore cursor visibility
-  printf '\033[?1049l'    # exit alternate screen (if an app left it active)
-  printf '\033[0m'        # reset text attributes
+  # Reset terminal state after disconnect
+  _cde_reset_terminal
 }
 
 cde() {
