@@ -44,6 +44,7 @@ alias g='git status -sb'     # short status with branch info
 alias gv='git branch -vv'    # list branches with last commit and upstream tracking info
 alias gb='git branch'
 alias gco='git checkout'
+alias ghr='~/.dotfiles/scripts/github-reviews.sh'  # interactively review assigned GitHub PRs
 
 # ── docker ────────────────────────────────────────────────────────────────────
 docker_stop_all()          { docker stop $(docker ps -a -q); }
