@@ -61,6 +61,21 @@ cx
 cx ~/co/dotfiles
 ```
 
+The personal agent instructions in `codex/AGENTS.md` are installed as
+`~/.codex/AGENTS.md` for Codex and `~/.claude/CLAUDE.md` for Claude. The Codex
+copy also includes the local RTK guidance.
+
+## Ona / EFS
+
+Set `EFS_MOUNT_POINT` in your personal Ona secrets, using a directory such as
+`/efs-home`. Ona runs the executable `post-start-install.sh` after startup;
+this repository delegates that hook to `work/efs-post-start-install.sh`.
+
+The current EFS allowlist contains only `~/.zsh_history`. The hook migrates an
+existing local history file when EFS is empty, preserves a local copy when EFS
+already has history, and is safe to run repeatedly. It intentionally does not
+share credentials, tool settings, agent databases, or conversation transcripts.
+
 Codex App remote sessions do not run hooks on the local host machine. For remote
 sessions, use Codex App notifications or configure notifications from the remote
 host itself. Local Codex terminal sessions use the configured `notify` command to
