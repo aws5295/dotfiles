@@ -66,19 +66,6 @@ patch_codex_config() {
   mv "$tmp" "$config"
 }
 
-install_codex_agents() {
-  local agents="$HOME/.codex/AGENTS.md"
-  local rtk="$HOME/.codex/RTK.md"
-  local tmp
-
-  mkdir -p "$HOME/.codex"
-  ln -sfn "$DOTFILES/codex/RTK.md" "$rtk"
-
-  tmp="$(mktemp)"
-  sed "s#__CODEX_RTK_PATH__#$rtk#g" "$DOTFILES/codex/AGENTS.md.template" > "$tmp"
-  mv "$tmp" "$agents"
-}
-
 # ── Pre-flight checks ─────────────────────────────────────────────────────────
 # Fail fast if hard dependencies are missing before doing any work
 command -v git  &>/dev/null || die "git is required but not installed"
@@ -164,7 +151,7 @@ else
   ln -sfn "$DOTFILES/claude/settings.json" ~/.claude/settings.json
 fi
 mkdir -p ~/.codex
-install_codex_agents                                                     # Codex global guidance + RTK
+bash "$DOTFILES/codex/install-agents.sh"                                # Shared personal guidance + RTK
 ln -sfn "$DOTFILES/codex/hooks.json"       ~/.codex/hooks.json          # Codex hooks
 patch_codex_config
 info "Codex config defaults patched"
