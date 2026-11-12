@@ -109,6 +109,12 @@ if command -v brew &>/dev/null; then
     info "adopting existing Herdr.app into Homebrew..."
     brew install --cask --adopt herdr-app || warn "could not adopt Herdr.app — brew bundle may report herdr-app"
   fi
+  # Homebrew refuses formulae from third-party taps until they're trusted. Trust
+  # only Atlassian's acli formula (its official tap), not the whole tap.
+  if brew trust --help &>/dev/null; then
+    brew tap atlassian/acli >/dev/null && brew trust --formula atlassian/acli/acli >/dev/null \
+      || warn "could not trust atlassian/acli/acli — brew bundle may skip acli"
+  fi
   info "installing brew packages..."
   brew bundle --file="$DOTFILES/Brewfile"
 else
