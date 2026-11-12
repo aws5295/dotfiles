@@ -103,6 +103,12 @@ fi
 # ── Homebrew packages ─────────────────────────────────────────────────────────
 # Install everything listed in Brewfile. brew bundle is idempotent — safe to re-run.
 if command -v brew &>/dev/null; then
+  # Herdr.app installed by hand before it was in the Brewfile: adopt it so the
+  # herdr-app cask doesn't fail on the existing app.
+  if [[ "$(uname)" == "Darwin" ]] && [[ -d /Applications/Herdr.app ]] && ! brew list --cask herdr-app &>/dev/null; then
+    info "adopting existing Herdr.app into Homebrew..."
+    brew install --cask --adopt herdr-app || warn "could not adopt Herdr.app — brew bundle may report herdr-app"
+  fi
   info "installing brew packages..."
   brew bundle --file="$DOTFILES/Brewfile"
 else
@@ -334,6 +340,9 @@ else:
     print('[info] terminal bell hook already present, skipping')
 PYEOF
 fi
+
+# ── Herdr desktop app (macOS) ─────────────────────────────────────────────────
+bash "$DOTFILES/scripts/herdr-install.sh"
 
 # ── Work (Vanta) setup ────────────────────────────────────────────────────────
 bash "$DOTFILES/work/vanta-install.sh"

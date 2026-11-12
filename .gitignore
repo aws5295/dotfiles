@@ -14,3 +14,8 @@ tmux/tmux
 
 # Machine-local secrets (contains API keys, IDs, tokens — never commit)
 secrets/local.zsh
+
+# Herdr rewrites these into every mod folder on start
+herdr/**/gpui-kit.d.ts
+herdr/**/jsconfig.json
+herdr/**/*.error
