@@ -31,6 +31,7 @@ cd ~/.dotfiles
    - Claude Code settings and peon-ping hooks
    - Cursor peon-ping hooks
    - Codex global guidance, hooks, stable config defaults, and the `cx` launcher
+6. On Linux CDEs, installs [herdr-core](https://herdr.dev) (`hc`) into `~/.local/bin` so the Herdr desktop app can open terminals there
 
 If `vim` or `tmux` aren't installed on the machine, those steps are skipped with a warning.
 
