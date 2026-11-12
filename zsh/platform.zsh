@@ -17,6 +17,10 @@ case "$(uname)" in
     done
     export PATH
 
+    # Casks that update themselves (auto_updates) are skipped by `brew upgrade`;
+    # list the ones brew should still upgrade.
+    export HOMEBREW_UPGRADE_GREEDY_CASKS="herdr-app"
+
     # Add Rust/Cargo binaries to PATH if Rust is installed
     [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
     ;;
