@@ -21,6 +21,8 @@ case "$(uname)" in
     # list the ones brew should still upgrade.
     export HOMEBREW_UPGRADE_GREEDY_CASKS="herdr-app"
 
+    # Add ~/.local/bin to PATH (Claude Code native install lives here)
+    [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
     # Add Rust/Cargo binaries to PATH if Rust is installed
     [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
     ;;
