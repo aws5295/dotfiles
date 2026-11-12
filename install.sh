@@ -158,6 +158,8 @@ ln -sfn "$DOTFILES/claude/keybindings.json" ~/.claude/keybindings.json  # Claude
 # without writing back through the symlink into the shared dotfiles file.
 # Linux/CDEs: symlink so settings stay current with dotfiles (no peon-ping on headless).
 if [[ "$(uname)" == "Darwin" ]]; then
+  # An older install may have left a symlink here; cp onto it fails ("same file").
+  [[ -L ~/.claude/settings.json ]] && rm ~/.claude/settings.json
   cp "$DOTFILES/claude/settings.json" ~/.claude/settings.json
 else
   ln -sfn "$DOTFILES/claude/settings.json" ~/.claude/settings.json
