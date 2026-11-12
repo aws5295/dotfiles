@@ -57,6 +57,12 @@ brew "rtk"                   # token reduction for Claude Code
 tap "PeonPing/tap"
 brew "peon-ping"             # audio notifications for Claude Code (game voice lines)
 
+# ── Herdr ─────────────────────────────────────────────────────────────────────
+brew "herdr"                 # terminal agent multiplexer (TUI)
+tap "atlassian/acli"
+brew "acli"                  # Atlassian CLI — the Herdr Jira (Postcards) panel shells out to it
+cask "herdr-app"             # Herdr desktop app (install.sh adopts a hand-installed Herdr.app first)
+
 # ── Casks ─────────────────────────────────────────────────────────────────────
 cask "1password-cli"
 cask "codex"                 # OpenAI Codex desktop app and CLI
