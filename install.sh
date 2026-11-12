@@ -282,6 +282,20 @@ if [[ "$(uname)" == "Linux" ]]; then
   fi
 fi
 
+# ── herdr-core (Linux CDEs) ───────────────────────────────────────────────────
+# The Herdr desktop app on the Mac runs remote terminals through herdr-core on
+# the remote machine. On macOS the app installs it; on Linux, use the official
+# install script → ~/.local/bin/herdr-core (+ hc). Updates go through `hc update`.
+if [[ "$(uname)" == "Linux" ]]; then
+  if command -v herdr-core &>/dev/null || [[ -x "$HOME/.local/bin/herdr-core" ]]; then
+    info "herdr-core already installed, skipping"
+  else
+    info "installing herdr-core..."
+    curl -fsSL https://releases.herdr.dev/core/install.sh | sh \
+      || warn "herdr-core install failed — run manually: curl -fsSL https://releases.herdr.dev/core/install.sh | sh"
+  fi
+fi
+
 # Install the Claude Code PreToolUse hook (idempotent).
 if command -v rtk &>/dev/null; then
   info "configuring rtk for Claude Code..."
