@@ -296,6 +296,16 @@ if [[ "$(uname)" == "Linux" ]]; then
     curl -fsSL https://releases.herdr.dev/core/install.sh | sh \
       || warn "herdr-core install failed — run manually: curl -fsSL https://releases.herdr.dev/core/install.sh | sh"
   fi
+
+  # New herdr terminals otherwise start the login shell, which is bash on CDEs.
+  # Prepend so the key stays top-level even if the file has tables.
+  herdr_core_config="$HOME/.config/herdr-core/config.toml"
+  if command -v zsh &>/dev/null && ! grep -qs '^shell *=' "$herdr_core_config"; then
+    info "setting herdr-core shell to zsh..."
+    mkdir -p "$(dirname "$herdr_core_config")"
+    { echo 'shell = ["zsh"]'; cat "$herdr_core_config" 2>/dev/null; } > "$herdr_core_config.tmp" \
+      && mv "$herdr_core_config.tmp" "$herdr_core_config"
+  fi
 fi
 
 # Install the Claude Code PreToolUse hook (idempotent).
